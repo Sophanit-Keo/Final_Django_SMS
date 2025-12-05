@@ -1,0 +1,108 @@
+{% extends 'layout/admin_sidebar.html' %}
+{% load static %}
+
+{% block content %}
+<main class="main-content">
+    <header class="header">
+        <div>
+            <h1>Student Management</h1>
+            <p class="text-gray-600">Manage all the Students</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-secondary" onclick="exportUsers()">Export</button>
+            <a href="{% url 'admin_add_student' %}" role="Button" class="btn btn-primary">Add student</a>
+        </div>
+    </header>
+
+    <!-- Filters -->
+    <div class="filters-section">
+        <div class="card">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label>Status</label>
+                    <select id="statusFilter">
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                        <option value="suspended">Suspended</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Search</label>
+                    <input type="text" id="searchInput" placeholder="Search Student...">
+                </div>
+
+                <div class="filter-group">
+                    <label>&nbsp;</label>
+                    <button class="btn btn-secondary">Clear Filters</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Users Table -->
+    <div class="table-container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Full name</th>
+                    <th>Personal Email</th>
+                    <th>Status</th>
+                    <th>Group</th>
+                    <th>Enrollment</th>
+                    <th>Date of Birth</th>
+                    <th>School Email</th>
+                    <th>Password</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Student will be populated -->
+                {% for student in students %}
+                <tr>
+                    <td>
+                        <div class="font-medium">
+                            <p>{{student.id}}</p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="user-info">
+                            <div class="font-medium">{{student.first_name}} {{ student.last_name}}</div>
+                        </div>
+                    </td>
+                    <td>{{student.email}}</td>
+                    <td><span
+                            class="status-{%if student.status.lower == 'active'%}active{%else%}none{%endif%}">{{student.status}}</span>
+                    </td>
+                    <td>{% if student.enrollment_set.all %}
+                        {{student.enrollment_set.first.group_id.name}}
+                        {% else %}N/A
+                        {% endif %}
+                    </td>
+                    <td>{% if student.enrollment_set.all %}
+                        {{student.enrollment_set.first.enrollment_date}}
+                        {% else %}N/A
+                        {% endif %}</td> 
+                    <td>{{student.date_of_birth}}</td>
+                    <td>{{student.first_name}}{{student.id}}@school.edu.kh</td>
+                    <td>Password</td>
+                    <td>
+                        <div class="actions">
+                            <a class="btn btn-sm btn-warning">Edit</a>
+                            <form style="display:inline;" method="post">
+                                {%csrf_token%}
+                                <input type="hidden" name="student_id" value="{{ student.id }}">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {%endfor%}
+                <!--End Student List-->
+            </tbody>
+        </table>
+    </div>
+</main>
+{% endblock %}

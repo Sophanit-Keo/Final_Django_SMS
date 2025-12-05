@@ -1,0 +1,96 @@
+{% extends 'layout/admin_sidebar.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Add/Edit Class Modal -->
+<div id="classModal" class="modal">
+    <div class="modal-content">
+
+        <!-- Header -->
+        <div class="modal-header">
+            <h2 id="modalTitle">Add Class</h2>
+            <a href="{% url 'admin_manage_class' %}" class="close-btn" id="closeModal" aria-label="Close">&times;</a>
+        </div>
+
+        <!-- Form -->
+        <form id="classForm" method="POST">
+            {% csrf_token %}
+
+            <!-- Group -->
+            <div class="form-group">
+                <label for="Group">Group:</label>
+                <select id="group" name="group" required>
+                    {%for group in groups%}]
+                    <option value="{{group.id}}" selected>{{group.name}}</option>
+                    {%endfor%}
+                </select>
+            </div>
+            <!-- Subject -->
+            <div class="form-group">
+                <label for="subject">Subject:</label>
+                <select id="subject" name="subject" required>
+                    {%for subject in subjects%}
+                    <option value="{{subject.id}}" selected> {{subject.name}} </option>
+                    {%endfor%}
+                </select>
+            </div>
+
+            <!-- Teacher -->
+            <div class="form-group">
+                <label for="teacher">Teacher:</label>
+                <select id="teacher" name="teacher" required>
+                    {%for teacher in teachers%}
+                    <option value="{{teacher.id}}" selected>{{teacher.first_name}} {{teacher.last_name}}</option>
+                    {%endfor%}
+                </select>
+            </div>
+
+            <!-- Room -->
+            <div class="form-group">
+                <label for="room">Room:</label>
+                <select id="room" name="room" required>
+                    <option value="" selected>-- Select Room --</option>
+                    {%for room in rooms%}
+                    <option value="{{room.id}}" selected>{{room.name}}</option>
+                    {%endfor%}
+                </select>
+            </div>
+
+            <!-- Day of Week -->
+            <div class="form-group">
+                <label for="day">Day of Week:</label>
+                <select id="day" name="day" required>
+                    <option value="">-- Select Day --</option>
+                    <option value="Monday">Monday</option>
+                    <option value="Tuesday">Tuesday</option>
+                    <option value="Wednesday">Wednesday</option>
+                    <option value="Thursday">Thursday</option>
+                    <option value="Friday">Friday</option>
+                    <option value="Saturday">Saturday</option>
+                    <option value="Sunday">Sunday</option>
+                </select>
+            </div>
+
+            <!-- Start Time -->
+            <div class="form-group">
+                <label for="start_time">Start Time:</label>
+                <input id="start_time" name="start_time" type="time" required>
+            </div>
+
+            <!-- End Time -->
+            <div class="form-group">
+                <label for="end_time">End Time:</label>
+                <input id="end_time" name="end_time" type="time" required>
+            </div>
+
+            <!-- Actions -->
+            <div class="form-actions">
+                <a href="{% url 'admin_manage_class' %}" type="button" class="btn btn-secondary"
+                    id="cancelBtn">Cancel</a>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+{% endblock %}

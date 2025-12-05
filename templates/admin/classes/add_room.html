@@ -1,0 +1,35 @@
+{% extends 'layout/admin_sidebar.html' %}
+{% load static %}
+
+{% block content %}
+
+<div id="roomModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Add New Room</h2>
+            <a href="{% url 'admin_manage_class' %}" class="close-btn" id="closeRoomModal">&times;</a>
+        </div>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Room Name:</label>
+                <input name ="room_name" type="text" placeholder="e.g., 101-A" required>
+            </div>
+            <div class="form-group">
+                <label>Room Location:</label>
+                <input name="room_location" type="text" placeholder="e.g., first Floor" required>
+            </div>
+            <div class="form-group">
+                <label>Room Capacity:</label>
+                <input name ="room_capacity" type="number" placeholder="e.g., 25" required>
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'admin_manage_class' %}" type="button" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Create Room</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+    {% endblock %}

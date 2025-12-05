@@ -1,0 +1,92 @@
+{% extends 'layout/admin_sidebar.html' %}
+{% load static %}
+
+{% block content %}
+<main class="main-content">
+    <div id="app">
+        <div class="container">
+            <header>
+                <h1>Class Schedule Management</h1>
+                <div class="header-actions">
+                    <a href="{% url 'admin_add_group' %}" id="addGroupBtn" class="btn btn-primary">Add Group</a>
+                    <a href="{% url 'admin_add_room' %}" id="addRoomBtn" class="btn btn-primary">Add Room</a>
+                </div>
+            </header>
+
+            <div class="group-selector">
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="_method" value="SEARCH">
+
+                    <label for="group-select">Select Group:</label>
+                    <select name="group_id" id="group-select" required>
+                        {% if groups %}
+                        <option value="" disabled selected>-- Select group --</option>
+                        {% for group in groups %}
+                        <option value="{{ group.id }}">{{ group.name }}</option>
+                        {% endfor %}
+                        {% else %}
+                        <option disabled selected>No group available</option>
+                        {% endif %}
+                    </select>
+
+                    <button class="btn btn-secondary" type="submit">Search</button>
+                </form>
+            </div>
+
+            <div id="scheduleSection" class="schedule-section">
+                <div class="section-header">
+                    <h2>Class Schedule</h2>
+                    <a href="{% url 'admin_add_group_schedule' %}" id="addClassBtn" class="btn btn-primary">Add
+                        Class</a>
+                </div>
+
+                <div class="table-container">
+                    <table id="scheduleTable">
+                        <thead>
+                            <tr>
+                                <th>Group</th>
+                                <th>Subject</th>
+                                <th>Teacher</th>
+                                <th>Room</th>
+                                <th>Day of Week</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="scheduleTableBody">
+                            {%for item in timetables%}
+                            <tr data-group="Group Name">
+                                <td>{{item.group_id.name}}</td>
+                                <td>{{item.subject_id.name}}</td>
+                                <td>{{item.teacher_id.first_name}}</td>
+                                <td>{{item.classroom_id.name}}</td>
+                                <td>{{item.day_of_week}}</td>
+                                <td>{{item.start_time}}</td>
+                                <td>{{item.end_time}}</td>
+                                <td>
+                                    <form method="post">
+                                        {%csrf_token%}
+                                        <a href="{% url 'admin_add_group_schedule' %}"
+                                            class="btn btn-sm btn-warning">Edit</a>
+                                        <input type="hidden" name="id" value="{{ item.id }}">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                    </form>
+                                </td>
+
+                                {% empty %}
+                                <td colspan="8" style="text-align: center; color: red;">No class schedules available.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+{% endblock %}

@@ -1,0 +1,98 @@
+{% extends 'layout/admin_sidebar.html' %}
+{% load static %}
+
+{% block content %}
+<main class="main-content">
+    <header class="header">
+        <div>
+            <h1>Master Schedule</h1>
+            <p class="text-gray-600">Filter and review the weekly timetable across the school</p>
+        </div>
+    </header>
+
+    <section class="filters-section">
+        <div class="card">
+            <form method="get" class="filters-grid">
+                <div class="filter-group">
+                    <label>Class</label>
+                    <select class="form-select">
+                        <option value="">All Classes</option>
+                        <option value="12-A" selected>12-A</option>
+                        <option value="12-B">12-B</option>
+                        <option value="12-C">12-C</option>
+                        <option value="12-D">12-D</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Subject</label>
+                    <select class="form-select">
+                        <option value="">All Subjects</option>
+                        <option value="Math" selected>Math</option>
+                        <option value="Science">Science</option>
+                        <option value="History">History</option>
+                        <option value="English">English</option>
+
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Teacher</label>
+                    <select class="form-select">
+                        <option value="">All Teachers</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Day</label>
+                    <select class="form-select">
+                        <option value="Monday" selected="Monday">Monday</option>
+                        <option value="Tuesday">Tuesday</option>
+                        <option value="Wednesday">Wednesday</option>
+                        <option value="Thursday">Thursday</option>
+                        <option value="Friday">Friday</option>
+                        <option value="Saturday">Saturday</option>
+                        <option value="Sunday">Sunday</option>
+
+                    </select>
+                </div>
+                <div class="filter-group align-end">
+                    <button type="submit" class="btn btn-primary">Apply</button>
+                    <a class="btn btn-secondary">Reset</a>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <section class="schedule-table">
+        <div class="card">
+            <div class="card-header">
+                <h3>Timetable Overview</h3>
+                <span class="text-gray-500">2 timetable entries</span> <!-- total count of filtered entries -->
+            </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        <th>Start</th>
+                        <th>End</th>
+                        <th>Class</th>
+                        <th>Subject</th>
+                        <th>Teacher</th>
+                        <th>Room</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Monday</td>
+                        <td>07:30</td> <!-- start times -->
+                        <td>11:30</td> <!-- end times -->
+                        <td>12-C</td> <!-- group names -->
+                        <td>Math</td> <!-- subject names -->
+                        <td>Jon</td> <!-- teacher names -->
+                        <td>A-101</td> <!-- classroom names -->
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+{% endblock %}

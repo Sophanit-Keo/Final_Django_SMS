@@ -1,0 +1,168 @@
+{% extends 'layout/admin_sidebar.html' %}
+{% load static %}
+
+{% block content %}
+<main class="main-content report-dashboard">
+    <header class="header">
+        <div>
+            <h1>Insights & Reports</h1>
+            <p class="text-gray-600">Key trends, utilization, and upcoming academic milestones</p>
+        </div>
+        <div class="header-actions">
+            <span class="report-period">Updated Jan 12 2026</span>
+        </div>
+    </header>
+
+    <section class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon primary">🎓</div>
+            <div class="stat-content">
+                <h3>12</h3><!-- Total Students -->
+                <p>Total Students</p>
+                <span class="stat-change positive">12 students joined this month</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon success">👨‍🏫</div>
+            <div class="stat-content">
+                <h3>12</h3>
+                <p>Total Teachers</p>
+                <span class="stat-change neutral"> active</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon warning">🏫</div>
+            <div class="stat-content">
+                <h3>13</h3> <!-- Active Classes -->
+                <p>Active Classes</p>
+                <span class="stat-change neutral">20.0 avg students / class</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon error">✅</div>
+            <div class="stat-content">
+                <h3>95.6 %</h3>
+                <p>Attendance Today</p>
+                <span class="stat-change ">
+                    +12 % vs. yesterday
+                </span>
+            </div>
+        </div>
+    </section>
+
+    <section class="reports-grid">
+        <div class="card">
+            <div class="card-header">
+                <h3>Upcoming Exams</h3>
+            </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Exam</th>
+                        <th>Date</th>
+                        <th>Max Mark</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Math</td>
+                        <td>January 12</td>
+                        <td>50</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3>Homework Due Soon</h3>
+            </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Group</th>
+                        <th>Subject</th>
+                        <th>Due</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Django</td>
+                        <td>PTSD-16</td>
+                        <td>Python</td>
+                        <td>Jan 12</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="reports-grid">
+        <div class="card">
+            <div class="card-header">
+                <h3>Recent Enrollments</h3>
+            </div>
+            <ul class="list">
+                <li>
+                    <div>
+                        <strong>Jane</strong>
+                        <span class="text-gray-500">PTSD-17</span>
+                    </div>
+                    <span class="text-gray-400">Jan 12</span>
+                </li>
+
+                <li>
+                    <div>
+                        <strong>Kobo</strong>
+                        <span class="text-gray-500">PTSD-17</span>
+                    </div>
+                    <span class="text-gray-400">Jan 12</span>
+                </li>
+
+                <li>
+                    <div>
+                        <strong>Toto</strong>
+                        <span class="text-gray-500">PTSD-17</span>
+                    </div>
+                    <span class="text-gray-400">Jan 12</span>
+                </li>
+
+            </ul>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3>Attendance Snapshot (30 days)</h3>
+            </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Status</th>
+                        <th>Count</th>
+                        <th>Share</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Present</td>
+                        <td>12</td>
+                        <td>80%</td>
+                    </tr>
+                    <tr>
+                        <td>Absent</td>
+                        <td>2</td>
+                        <td>9%</td>
+                    </tr>
+                    <tr>
+                        <td>Late</td>
+                        <td>4</td>
+                        <td>2%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+{% endblock %}

@@ -1,0 +1,143 @@
+{% extends 'layout/teacher_sidebar.html' %}
+{% load static %}
+
+{% block content %}
+<main class="main-content">
+    <header class="header">
+        <div>
+            <h1>My Schedule</h1>
+            <p class="text-gray-600">Manage your classes and time slots</p>
+        </div>
+    </header>
+
+    <div class="app">
+        <div class="schedule-card">
+            <div class="schedule-header">
+                <div class="schedule-title">Weekly Schedule</div>
+                <div class="schedule-controls">
+                    <div class="date-label">December 16–22, 2025</div>
+                    <div class="nav-buttons">
+                        <button class="btn">&#9664; Previous</button>
+                        <button class="btn">Next &#9654;</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="schedule-body">
+                <!-- Time column -->
+                <div class="time-column">
+                    <div class="time-slot">8:00</div>
+                    <div class="time-slot">9:00</div>
+                    <div class="time-slot">10:00</div>
+                    <div class="time-slot">11:00</div>
+                    <div class="time-slot">12:00</div>
+                    <div class="time-slot">13:00</div>
+                    <div class="time-slot">14:00</div>
+                    <div class="time-slot">15:00</div>
+                    <div class="time-slot">16:00</div>
+                </div>
+
+                <!-- Grid -->
+                <div class="schedule-grid">
+                    <!-- Day headers (7 days) -->
+                    <div class="day-label" style="grid-column:1;">Mon</div>
+                    <div class="day-label" style="grid-column:2;">Tue</div>
+                    <div class="day-label" style="grid-column:3;">Wed</div>
+                    <div class="day-label" style="grid-column:4;">Thu</div>
+                    <div class="day-label" style="grid-column:5;">Fri</div>
+                    <div class="day-label" style="grid-column:6;">Sat</div>
+                    <div class="day-label" style="grid-column:7;">Sun</div>
+
+                    <!-- Events  (row 2=8:00, row 3=9:00, etc.) -->
+
+                    <!-- Monday -->
+                    <div class="event math" style="--col:1; --row-start:5; --row-span:1;">
+                        <div class="event-title">Mathematics</div>
+                        <div class="event-sub">Grade 10B</div>
+                        <div class="event-room">Room 202</div>
+                    </div>
+
+                    <div class="event physics" style="--col:1; --row-start:8; --row-span:1;">
+                        <div class="event-title">Physics</div>
+                        <div class="event-sub">Grade 10A</div>
+                        <div class="event-room">Lab 3</div>
+                    </div>
+
+                    <!-- Tuesday -->
+                    <div class="event math" style="--col:2; --row-start:3; --row-span:1;">
+                        <div class="event-title">Mathematics</div>
+                        <div class="event-sub">Grade 10A</div>
+                        <div class="event-room">Room 201</div>
+                    </div>
+
+                    <div class="event math" style="--col:2; --row-start:4; --row-span:1;">
+                        <div class="event-title">Mathematics</div>
+                        <div class="event-sub">Grade 11A</div>
+                        <div class="event-room">Room 205</div>
+                    </div>
+
+                    <div class="event physics" style="--col:2; --row-start:5; --row-span:1;">
+                        <div class="event-title">Physics Lab</div>
+                        <div class="event-sub">Grade 10A</div>
+                        <div class="event-room">Lab 3</div>
+                    </div>
+
+                    <!-- Wednesday -->
+                    <div class="event physics" style="--col:3; --row-start:9; --row-span:1;">
+                        <div class="event-title">Physics Lab</div>
+                        <div class="event-sub">Grade 10A</div>
+                        <div class="event-room">Lab 3</div>
+                    </div>
+
+                    <!-- Thursday -->
+                    <div class="event physics" style="--col:4; --row-start:3; --row-span:1;">
+                        <div class="event-title">Physics</div>
+                        <div class="event-sub">Grade 10B</div>
+                        <div class="event-room">Lab 3</div>
+                    </div>
+
+                    <div class="event physics" style="--col:4; --row-start:6; --row-span:1;">
+                        <div class="event-title">Physics</div>
+                        <div class="event-sub">Grade 11A</div>
+                        <div class="event-room">Lab 2</div>
+                    </div>
+
+                    <div class="event math" style="--col:4; --row-start:7; --row-span:1;">
+                        <div class="event-title">Mathematics</div>
+                        <div class="event-sub">Grade 10B</div>
+                        <div class="event-room">Room 202</div>
+                    </div>
+
+                    <div class="event math" style="--col:4; --row-start:8; --row-span:1;">
+                        <div class="event-title">Mathematics</div>
+                        <div class="event-sub">Grade 11A</div>
+                        <div class="event-room">Room 205</div>
+                    </div>
+
+                    <!-- Friday -->
+                    <div class="event math" style="--col:5; --row-start:6; --row-span:1;">
+                        <div class="event-title">Mathematics</div>
+                        <div class="event-sub">Grade 10A</div>
+                        <div class="event-room">Room 201</div>
+                    </div>
+
+                    <!-- Saturday -->
+                    <div class="event math" style="--col:6; --row-start:6; --row-span:1;">
+                        <div class="event-title">Mathematics</div>
+                        <div class="event-sub">Grade 10A</div>
+                        <div class="event-room">Room 201</div>
+                    </div>
+
+                    <!-- Sunday -->
+                    <div class="event math" style="--col:7; --row-start:6; --row-span:1;">
+                        <div class="event-title">Mathematics</div>
+                        <div class="event-sub">Grade 10A</div>
+                        <div class="event-room">Room 201</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+{% endblock %}

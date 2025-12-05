@@ -1,0 +1,106 @@
+{% extends 'layout/admin_sidebar.html' %}
+{% load static %}
+
+{% block content %}
+<main class="main-content">
+    <header class="header">
+        <div>
+            <h1>Teacher Management</h1>
+            <p class="text-gray-600">Manage all the Teacher</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-secondary">Export</button>
+            <a href="{% url 'admin_add_teacher' %}" role="Button" class="btn btn-primary">Add Teacher</a>
+        </div>
+    </header>
+
+    <!-- Filters -->
+    <div class="filters-section">
+        <div class="card">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label>Status</label>
+                    <select id="statusFilter">
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                        <option value="suspended">Suspended</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Search</label>
+                    <input type="text" id="searchInput" placeholder="Search teacher...">
+                </div>
+
+                <div class="filter-group">
+                    <label>&nbsp;</label>
+                    <button class="btn btn-secondary">Clear Filters</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Users Table -->
+    <div class="table-container">
+        <table class="table">
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Full name</th>
+                    <th>Personal Email</th>
+                    <th>Status</th>
+                    <th>Joined</th>
+                    <th>Subject</th>
+                    <th>School Email</th>
+                    <th>Password</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="usersTableBody">
+                <!-- Teacher will be populated -->
+                {%for teacher in teachers%}
+                <tr>
+                    <td>
+                        <div class="font-medium">
+                            <!-- teacher Id -->
+                            <p>{{teacher.id}}</p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="user-info">
+                            <!-- Teacher name -->
+                            <div class="font-medium">{{teacher.first_name}}</div>
+                        </div>
+                    </td>
+                    <!-- Teacher personal Email -->
+                    <td>{{teacher.email}}</td>
+                    <td><span class="status-{{teacher.status}}">{{teacher.status}}</span></td>
+                    <td>{{teacher.hire_date}}</td> <!-- Teacher HireDate -->
+                    <td>
+                        {% for subject in teacher.subject_set.all %}
+                        <li>{{ subject.name }}</li>
+                        {% endfor %}
+                    </td>
+                    <!-- Teacher School Email -->
+                    <td>{{teacher.school_email}}</td>
+                    <td>Default Password</td> <!-- Default Password -->
+                    <td>
+                        <div class="actions">
+                            <a class="btn btn-sm btn-warning">Edit</a>
+                            <form style="display:inline;" method="post">
+                                {%csrf_token%}
+                                <input type="hidden" name="teacher_id" value="{{ teacher.id }}">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {%endfor%}
+                <!--End Teacher List-->
+            </tbody>
+        </table>
+    </div>
+</main>
+{% endblock %}

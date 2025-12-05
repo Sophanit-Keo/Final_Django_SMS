@@ -1,0 +1,143 @@
+{% extends 'layout/admin_sidebar.html' %}
+{% load static %}
+
+{% block content %}
+<main class="main-content">
+    <header class="header">
+        <h1>Welcome back, Admin</h1>
+        <p class="text-gray-600">{{current_date}}</p>
+        <div class="header-actions">
+            <div class="profile-menu">
+                <img src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=64&h=64&fit=crop"
+                    alt="Admin" class="profile-avatar">
+            </div>
+        </div>
+    </header>
+
+
+    <!-- Stats Overview -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon success">👥</div>
+            <div class="stat-content">
+                <h3>{{student_total}}</h3>
+                <p>Total Students</p>
+                <span class="stat-change positive">+12 this month</span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon primary">🎓</div>
+            <div class="stat-content">
+                <h3>{{teacher_total}}</h3>
+                <p>Total Teachers</p>
+                <span class="stat-change positive">+3 this month</span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon warning">🏫</div>
+            <div class="stat-content">
+                <h3>{{group_total}}</h3>
+                <p>Total Group</p>
+                <span class="stat-change neutral">No change</span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon error">💰</div>
+            <div class="stat-content">
+                <h3>N/A</h3>
+                <p>Monthly Revenue</p>
+                <span class="stat-change positive">+8.2%</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="charts-section">
+        <div class="chart-container">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Student Enrollment Trends</h3>
+                    <select class="chart-filter">
+                        <option>Last 6 months</option>
+                        <option>Last year</option>
+                    </select>
+                </div>
+                <div class="trend-card">
+                    <div class="trend-list">
+                        {% for item in trend_list %}
+                        <div class="trend-item">
+                            <div class="trend-info">
+                                <div class="trend-text">
+                                    <h4>{{ item.name }} </h4>
+                                    <span
+                                        class="badge badge-{%if item.type == 'student' %}student{% else %}teacher{% endif %}">
+                                        {% if item.type == "student" %}student{% else %}teacher{% endif %}
+                                    </span>
+                                    <h5>have just {% if item.type == "student" %}enroll{% else %}hire{% endif %}
+                                        for</h5>
+                                    <h4>{{ item.count }} days</h4>
+                                </div>
+                                <p>Year: {{ item.year }}</p>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <p>No recent enrollment activity.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Grade Distribution</h3>
+                    </div>
+                    <canvas id="gradeChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activities -->
+        <div class="recent-activities">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Recent Activities</h3>
+                    <a href="#" class="text-primary">View all</a>
+                </div>
+                <div class="activity-list">
+                    {% for item in trend_list %}
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            {% if item.type == "student" %}
+                            👤
+                            {% elif item.type == "teacher" %}
+                            🎓
+                            {% endif %}
+                        </div>
+
+                        <div class="activity-content">
+                            <p>
+                                <strong>
+                                    New
+                                    {% if item.type == "student" %}
+                                    student registered:
+                                    {% elif item.type == "teacher" %}
+                                    teacher registered:
+                                    {% endif %}
+                                </strong>
+                                <!-- show the actual user name -->
+                                {{ item.name }}
+                            </p>
+
+                            <span class="activity-time">{{item.date}}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+</main>
+{% endblock %}

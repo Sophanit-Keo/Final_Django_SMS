@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard</title>
+    <link rel="stylesheet" href="{% static 'shared/css/components.css' %}">
+    <link rel="stylesheet" href="{% static 'shared/css/reset.css' %}">
+    <link rel="stylesheet" href="{% static 'shared/css/typography.css' %}">
+    <link rel="stylesheet" href="{% static 'shared/css/layout.css' %}">
+    <link rel="stylesheet" href="{% static 'admin/css/teacher.css' %}">
+    <script src="{% static 'shared/js/sidebar.js' %}"></script>
+</head>
+
+<body>
+    <div class="teacher-layout">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">EP</div>
+                <h3>EduPortal</h3>
+                <span class="role-badge">Teacher</span>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li><a href="{% url 'teacher_dashboard' %}" class="active"><span class="icon">📊</span> Dashboard</a>
+                </li>
+                <li><a href="{% url 'teacher_dashboard_schedule' %}"><span class="icon">🗓️</span> Schedule</a></li>
+                <li><a href="{% url 'teacher_dashboard_attendance' %}"><span class="icon">⏲️</span> Attendance</a></li>
+                <li><a href="{% url 'teacher_dashboard_exam' %}"><span class="icon">🖍️</span> Exam</a></li>
+                <li><a href="{% url 'teacher_dashboard_report' %}"><span class="icon">📗</span> Report</a></li>
+                <li><a href="{% url 'teacher_dashboard_inbox' %}"><span class="icon">📅</span> Inbox</a></li>
+                <li><a href="{% url 'logout' %}" onclick="logout()"><span class="icon">🚪</span> Logout</a></li>
+            </ul>
+        </nav>
+        <!-- Main Content -->
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+
+</html>

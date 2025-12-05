@@ -1,0 +1,141 @@
+{% extends 'layout/teacher_sidebar.html' %}
+{% load static %}
+
+{% block content %}
+<main class="main-content">
+    <header class="header">
+        <div>
+            <h1>Analytics & Reports</h1>
+            <p class="text-gray-600">Comprehensive school performance insights</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-secondary">Export Report</button>
+            <button class="btn btn-primary">Generate Report</button>
+        </div>
+    </header>
+
+    <!-- Report Filters -->
+    <div class="filters-section">
+        <div class="card">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label>Time Period</label>
+                    <select id="periodFilter">
+                        <option value="month">This Month</option>
+                        <option value="semester">This Semester</option>
+                        <option value="year">This Year</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Report Type</label>
+                    <select id="reportFilter">
+                        <option value="academic">Academic Performance</option>
+                        <option value="attendance">Attendance</option>
+                        <option value="financial">Financial</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Grade Level</label>
+                    <select id="gradeFilter">
+                        <option value="">All Grades</option>
+                        <option value="9">Grade 9</option>
+                        <option value="10">Grade 10</option>
+                        <option value="11">Grade 11</option>
+                        <option value="12">Grade 12</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analytics Charts -->
+    <div class="analytics-section">
+        <div class="chart-container">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Academic Performance Trends</h3>
+                </div>
+                <canvas id="performanceChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Attendance Overview</h3>
+                </div>
+                <canvas id="attendanceChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detailed Reports -->
+    <div class="reports-grid">
+        <div class="report-card">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Top Performing Students</h3>
+                </div>
+                <div class="student-rankings">
+                    <div class="ranking-item">
+                        <div class="rank">1</div>
+                        <img src="https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=40&h=40&fit=crop"
+                            alt="Student">
+                        <div class="student-info">
+                            <h4>Marie Stephens</h4>
+                            <p>Grade 10B - GPA: 3.9</p>
+                        </div>
+                        <div class="score">95%</div>
+                    </div>
+
+                    <div class="ranking-item">
+                        <div class="rank">2</div>
+                        <img src="https://images.pexels.com/photos/1559486/pexels-photo-1559486.jpeg?auto=compress&cs=tinysrgb&w=40&h=40&fit=crop"
+                            alt="Student">
+                        <div class="student-info">
+                            <h4>John Doe</h4>
+                            <p>Grade 10A - GPA: 3.8</p>
+                        </div>
+                        <div class="score">92%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="report-card">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Subject Performance</h3>
+                </div>
+                <div class="subject-performance">
+                    <div class="subject-item">
+                        <span>Mathematics</span>
+                        <div class="performance-bar">
+                            <div class="performance-fill" style="width: 85%"></div>
+                        </div>
+                        <span>85%</span>
+                    </div>
+
+                    <div class="subject-item">
+                        <span>English</span>
+                        <div class="performance-bar">
+                            <div class="performance-fill" style="width: 92%"></div>
+                        </div>
+                        <span>92%</span>
+                    </div>
+
+                    <div class="subject-item">
+                        <span>Physics</span>
+                        <div class="performance-bar">
+                            <div class="performance-fill" style="width: 78%"></div>
+                        </div>
+                        <span>78%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
