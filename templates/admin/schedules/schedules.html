@@ -80,15 +80,17 @@
                     </tr>
                 </thead>
                 <tbody>
+                    {% for timetable in timetables %}
                     <tr>
-                        <td>Monday</td>
-                        <td>07:30</td> <!-- start times -->
-                        <td>11:30</td> <!-- end times -->
-                        <td>12-C</td> <!-- group names -->
-                        <td>Math</td> <!-- subject names -->
-                        <td>Jon</td> <!-- teacher names -->
-                        <td>A-101</td> <!-- classroom names -->
+                        <td>{{ timetable.day_of_week }}</td>
+                        <td>{{ timetable.start_time }}</td>
+                        <td>{{ timetable.end_time }}</td>
+                        <td>{{ timetable.group_id.name }}</td>
+                        <td>{{ timetable.subject_id.name }}</td>
+                        <td>{{ timetable.teacher_id.first_name }} {{ timetable.teacher_id.last_name }}</td>
+                        <td>{{ timetable.classroom_id.name }}</td>
                     </tr>
+                    {% endfor %}
 
                 </tbody>
             </table>

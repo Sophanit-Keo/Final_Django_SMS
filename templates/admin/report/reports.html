@@ -9,7 +9,7 @@
             <p class="text-gray-600">Key trends, utilization, and upcoming academic milestones</p>
         </div>
         <div class="header-actions">
-            <span class="report-period">Updated Jan 12 2026</span>
+            <span class="report-period">Updated {{current_date}}</span>
         </div>
     </header>
 
@@ -17,7 +17,7 @@
         <div class="stat-card">
             <div class="stat-icon primary">🎓</div>
             <div class="stat-content">
-                <h3>12</h3><!-- Total Students -->
+                <h3>{{total_students}}</h3><!-- Total Students -->
                 <p>Total Students</p>
                 <span class="stat-change positive">12 students joined this month</span>
             </div>
@@ -25,7 +25,7 @@
         <div class="stat-card">
             <div class="stat-icon success">👨‍🏫</div>
             <div class="stat-content">
-                <h3>12</h3>
+                <h3>{{total_teachers}}</h3>
                 <p>Total Teachers</p>
                 <span class="stat-change neutral"> active</span>
             </div>
@@ -33,9 +33,9 @@
         <div class="stat-card">
             <div class="stat-icon warning">🏫</div>
             <div class="stat-content">
-                <h3>13</h3> <!-- Active Classes -->
-                <p>Active Classes</p>
-                <span class="stat-change neutral">20.0 avg students / class</span>
+                <h3>{{total_groups}}</h3> <!-- Active Classes -->
+                <p>Active Groups</p>
+                <span class="stat-change neutral">{{avg_class_size}} avg students / class</span>
             </div>
         </div>
         <div class="stat-card">
@@ -64,11 +64,13 @@
                     </tr>
                 </thead>
                 <tbody>
+                    {% for exam in exams %}
                     <tr>
-                        <td>Math</td>
-                        <td>January 12</td>
-                        <td>50</td>
+                        <td>{{ exam.name }}</td>
+                        <td>{{ exam.date }}</td>
+                        <td>{{ exam.total_marks }}</td>
                     </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
@@ -87,12 +89,14 @@
                     </tr>
                 </thead>
                 <tbody>
+                    {%for hw in homeworks %}
                     <tr>
-                        <td>Django</td>
-                        <td>PTSD-16</td>
-                        <td>Python</td>
-                        <td>Jan 12</td>
+                        <td>{{ hw.title }}</td>
+                        <td>{{ hw.group_id.name }}</td>
+                        <td>{{ hw.subject_id.name }}</td>
+                        <td>{{ hw.due_date }}</td>
                     </tr>
+                    {% endfor %}
 
                 </tbody>
             </table>
@@ -105,30 +109,15 @@
                 <h3>Recent Enrollments</h3>
             </div>
             <ul class="list">
+               {%for enrollment in recent_enrollments%}
                 <li>
                     <div>
-                        <strong>Jane</strong>
-                        <span class="text-gray-500">PTSD-17</span>
+                        <strong>{{enrollment.student_id.first_name}} {{enrollment.student_id.last_name}}</strong>
+                        <span class="text-gray-500">{{enrollment.group_id.name}}</span>
                     </div>
-                    <span class="text-gray-400">Jan 12</span>
+                    <span class="text-gray-400">{{enrollment.enrollment_date}}</span>
                 </li>
-
-                <li>
-                    <div>
-                        <strong>Kobo</strong>
-                        <span class="text-gray-500">PTSD-17</span>
-                    </div>
-                    <span class="text-gray-400">Jan 12</span>
-                </li>
-
-                <li>
-                    <div>
-                        <strong>Toto</strong>
-                        <span class="text-gray-500">PTSD-17</span>
-                    </div>
-                    <span class="text-gray-400">Jan 12</span>
-                </li>
-
+                {% endfor %}
             </ul>
         </div>
 

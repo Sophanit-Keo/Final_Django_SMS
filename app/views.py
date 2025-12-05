@@ -24,11 +24,91 @@ def admin_dashboard(request):
 def admin_dashboard_class(request):
     groups = Group.objects.all()
     timetable = Timetable.objects.select_related('group_id', 'teacher_id', 'classroom_id').all()
+    total_groups = groups.count()
+    total_students = Student.objects.count()
+    total_teachers = Teacher.objects.count()
+    avg_class_size = total_students / total_groups if total_groups > 0 else 0
     context = {
         "groups": groups,
         "timetables": timetable,
+        "total_groups": total_groups,
+        "total_students": total_students,
+        "total_teachers": total_teachers,
+        "avg_class_size": avg_class_size,
     }
     return render(request, 'admin/classes/classes.html',context)
+#-------- Class Admin #--------
+def admin_manage_class(request):
+    groups = Group.objects.all()
+    timetables = Timetable.objects.select_related(
+        'group_id', 'teacher_id', 'classroom_id'
+    ).all()
+
+    if request.method == "POST":
+        method = request.POST.get("_method")
+        # --- DELETE ---
+        if method == "DELETE":
+            timetable_id = request.POST.get("id")
+            Timetable.objects.filter(id=timetable_id).delete()
+            return redirect("admin_manage_class")
+        # --- SEARCH ---
+        elif method == "SEARCH":
+            group_id = request.POST.get("group_id")
+            if group_id:
+                timetables = Timetable.objects.select_related(
+                    'group_id', 'teacher_id', 'classroom_id'
+                ).filter(group_id=group_id)
+    context = {
+        "groups": groups,
+        "timetables": timetables,
+    }
+    return render(request, "admin/classes/manage_class.html", context)
+
+
+def admin_add_group_schedule(request):
+    groups = Group.objects.all()
+    rooms = Classroom.objects.all()
+    teachers = Teacher.objects.all()
+    subjects = Subject.objects.all()
+    timetable = Timetable()
+    context = {
+        "groups": groups,
+        "rooms":rooms,
+        "teachers":teachers,
+        "subjects":subjects
+    }
+    if request.method == "POST":
+        timetable.teacher_id = Teacher.objects.get(id=request.POST.get('teacher'))
+        timetable.subject_id = Subject.objects.get(id=request.POST.get('subject'))
+        timetable.group_id = Group.objects.get(id=request.POST.get('group'))
+        timetable.classroom_id = Classroom.objects.get(id=request.POST.get('room'))
+        timetable.start_time = request.POST.get('start_time')
+        timetable.end_time = request.POST.get('end_time')
+        timetable.day_of_week = request.POST.get('day')
+        timetable.save()
+        return redirect("admin_manage_class")
+    return render(request, 'admin/classes/add_group_schedule.html',context)
+
+
+def admin_add_group(request):
+    if request.method == "POST":
+        group = Group( )
+        group_name = request.POST.get('group_name')
+        group_description = request.POST.get("group_description")
+        group.name = group_name
+        group.description = group_description
+        group.save()
+        return redirect("admin_manage_class")
+    return render(request, 'admin/classes/add_group.html',{})
+def admin_add_room(request):
+    if request.method == "POST":
+        room = Classroom()
+        room.name = request.POST.get('room_name')
+        room.capacity = request.POST.get('room_capacity')
+        room.location = request.POST.get('room_location')
+        room.save()
+        return redirect("admin_manage_class")
+    return render(request, 'admin/classes/add_room.html',{})
 #--------- admin_teacher ---------#
 def admin_add_teacher(request):
     teachers = Teacher.objects.prefetch_related("subject_set").all()
@@ -153,86 +233,40 @@ def admin_add_student(request):
             context['error'] = f"Error adding teacher: {str(e)}"
             print(context['error'])
             return redirect('admin_add_student')
-
+        
     return render(request, 'admin/student/add_student.html',context)
 
 def admin_dashboard_report(request):
-    return render(request, 'admin/reports.html',{})
-def admin_dashboard_schedule(request):
-    return render(request, 'admin/schedules.html',{})
-    #-------- Class Admin #--------
-def admin_manage_class(request):
     groups = Group.objects.all()
-    timetables = Timetable.objects.select_related(
-        'group_id', 'teacher_id', 'classroom_id'
-    ).all()
+    timetable = Timetable.objects.select_related('group_id', 'teacher_id', 'classroom_id').all()
+    total_groups = groups.count()
+    total_students = Student.objects.count()
+    total_teachers = Teacher.objects.count()
+    avg_class_size = total_students / total_groups if total_groups > 0 else 0
+    current_date = datetime.date.today()
+    exams = Exam.objects.select_related().all()
+    homework = Homework.objects.select_related('group_id','subject_id','teacher_id').all()
+    enrollments = Enrollment.objects.select_related('student_id','group_id').all()
 
-    if request.method == "POST":
-        method = request.POST.get("_method")
-        # --- DELETE ---
-        if method == "DELETE":
-            timetable_id = request.POST.get("id")
-            Timetable.objects.filter(id=timetable_id).delete()
-            return redirect("admin_manage_class")
-        # --- SEARCH ---
-        elif method == "SEARCH":
-            group_id = request.POST.get("group_id")
-            if group_id:
-                timetables = Timetable.objects.select_related(
-                    'group_id', 'teacher_id', 'classroom_id'
-                ).filter(group_id=group_id)
     context = {
         "groups": groups,
+        "timetables": timetable,
+        "total_groups": total_groups,
+        "total_students": total_students,
+        "total_teachers": total_teachers,
+        "avg_class_size": avg_class_size,
+        "current_date": current_date,
+        "exams": exams,
+        "homeworks": homework,
+        "enrollments": enrollments,
+    }
+    return render(request, 'admin/report/reports.html',context)
+def admin_dashboard_schedule(request):
+    timetables = Timetable.objects.select_related('group_id', 'teacher_id', 'classroom_id').all()    
+    context = {
         "timetables": timetables,
     }
-    return render(request, "admin/classes/manage_class.html", context)
-
-
-def admin_add_group_schedule(request):
-    groups = Group.objects.all()
-    rooms = Classroom.objects.all()
-    teachers = Teacher.objects.all()
-    subjects = Subject.objects.all()
-    timetable = Timetable()
-    context = {
-        "groups": groups,
-        "rooms":rooms,
-        "teachers":teachers,
-        "subjects":subjects
-    }
-    if request.method == "POST":
-        timetable.teacher_id = Teacher.objects.get(id=request.POST.get('teacher'))
-        timetable.subject_id = Subject.objects.get(id=request.POST.get('subject'))
-        timetable.group_id = Group.objects.get(id=request.POST.get('group'))
-        timetable.classroom_id = Classroom.objects.get(id=request.POST.get('room'))
-        timetable.start_time = request.POST.get('start_time')
-        timetable.end_time = request.POST.get('end_time')
-        timetable.day_of_week = request.POST.get('day')
-        timetable.save()
-        return redirect("admin_manage_class")
-    return render(request, 'admin/classes/add_group_schedule.html',context)
-
-
-def admin_add_group(request):
-    if request.method == "POST":
-        group = Group( )
-        group_name = request.POST.get('group_name')
-        group_description = request.POST.get("group_description")
-        group.name = group_name
-        group.description = group_description
-        group.save()
-        return redirect("admin_manage_class")
-    return render(request, 'admin/classes/add_group.html',{})
-def admin_add_room(request):
-    if request.method == "POST":
-        room = Classroom()
-        room.name = request.POST.get('room_name')
-        room.capacity = request.POST.get('room_capacity')
-        room.location = request.POST.get('room_location')
-        room.save()
-        return redirect("admin_manage_class")
-    return render(request, 'admin/classes/add_room.html',{})
-    # Student Admin
+    return render(request, 'admin/schedules/schedules.html',context)
 
 
 # =============================== Teacher ===============================#
