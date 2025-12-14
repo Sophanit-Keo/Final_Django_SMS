@@ -1,12 +1,9 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from django.db import models
 import datetime
 from app.models import *
-from django.core.exceptions import ObjectDoesNotExist
+from .utils import enrollment_trends
 
-# Create your views here.
-#========================= Admin =========================
+# ========================= Admin Dashboard =========================
 def admin_dashboard(request):
     trend_list_enrollment = enrollment_trends()
     student_total = Student.objects.count()
@@ -20,7 +17,9 @@ def admin_dashboard(request):
         "trend_list": trend_list_enrollment,
     }
     return render(request, "admin/indexs.html", context)
-#--------- admin_class ---------#
+
+
+# ========================= Admin Classes =========================
 def admin_dashboard_class(request):
     groups = Group.objects.all()
     timetable = Timetable.objects.select_related('group_id', 'teacher_id', 'classroom_id').all()
@@ -36,8 +35,9 @@ def admin_dashboard_class(request):
         "total_teachers": total_teachers,
         "avg_class_size": avg_class_size,
     }
-    return render(request, 'admin/classes/classes.html',context)
-#-------- Class Admin #--------
+    return render(request, 'admin/classes/classes.html', context)
+
+
 def admin_manage_class(request):
     groups = Group.objects.all()
     timetables = Timetable.objects.select_related(
@@ -73,9 +73,9 @@ def admin_add_group_schedule(request):
     timetable = Timetable()
     context = {
         "groups": groups,
-        "rooms":rooms,
-        "teachers":teachers,
-        "subjects":subjects
+        "rooms": rooms,
+        "teachers": teachers,
+        "subjects": subjects
     }
     if request.method == "POST":
         timetable.teacher_id = Teacher.objects.get(id=request.POST.get('teacher'))
@@ -87,19 +87,21 @@ def admin_add_group_schedule(request):
         timetable.day_of_week = request.POST.get('day')
         timetable.save()
         return redirect("admin_manage_class")
-    return render(request, 'admin/classes/add_group_schedule.html',context)
+    return render(request, 'admin/classes/add_group_schedule.html', context)
 
 
 def admin_add_group(request):
     if request.method == "POST":
-        group = Group( )
+        group = Group()
         group_name = request.POST.get('group_name')
         group_description = request.POST.get("group_description")
         group.name = group_name
         group.description = group_description
         group.save()
         return redirect("admin_manage_class")
-    return render(request, 'admin/classes/add_group.html',{})
+    return render(request, 'admin/classes/add_group.html', {})
+
+
 def admin_add_room(request):
     if request.method == "POST":
         room = Classroom()
@@ -108,18 +110,19 @@ def admin_add_room(request):
         room.location = request.POST.get('room_location')
         room.save()
         return redirect("admin_manage_class")
-    return render(request, 'admin/classes/add_room.html',{})
-#--------- admin_teacher ---------#
+    return render(request, 'admin/classes/add_room.html', {})
+
+
+# ========================= Admin Teachers =========================
 def admin_add_teacher(request):
     teachers = Teacher.objects.prefetch_related("subject_set").all()
     subjects = Subject.objects.all()
     teacher = Teacher()
     context = {
-        "teachers" : teachers,
-        "subjects" : subjects
+        "teachers": teachers,
+        "subjects": subjects
     }
     if request.method == "POST":
-        print("POST is call")
         try:
             teacher.first_name = request.POST.get('first_name')
             teacher.last_name = request.POST.get('last_name')
@@ -144,24 +147,26 @@ def admin_add_teacher(request):
             context['error'] = f"Error adding teacher: {str(e)}"
             print(context['error'])
             return render(request, 'admin/teacher/add_teacher.html', context)
-    return render(request, 'admin/teacher/add_teacher.html',context)
+    return render(request, 'admin/teacher/add_teacher.html', context)
+
 
 def admin_dashboard_teacher(request):
     teachers = Teacher.objects.prefetch_related("subject_set").all()
     subjects = Subject.objects.prefetch_related("teacher_set").all()
     context = {
-        "teachers" : teachers,
-        "subjects" : subjects
+        "teachers": teachers,
+        "subjects": subjects
     }
     if request.method == "POST":
         method = request.POST.get("_method")
-        if method =="DELETE":
+        if method == "DELETE":
             teacher_id = request.POST.get("teacher_id")
-            Teacher.objects.filter(id = teacher_id).delete()
+            Teacher.objects.filter(id=teacher_id).delete()
             return redirect("admin_dashboard_teacher")
-    return render(request, 'admin/teacher/teachers.html',context)
+    return render(request, 'admin/teacher/teachers.html', context)
 
-#--------- admin_student ---------#
+
+# ========================= Admin Students =========================
 def admin_dashboard_student(request):
     students = Student.objects.prefetch_related('enrollment_set').all()
     context = {
@@ -171,26 +176,27 @@ def admin_dashboard_student(request):
     if request.method == "POST":
         method = request.POST.get('_method')
         if method == 'DELETE':
-            Student.objects.filter(id =request.POST.get('student_id')).delete()
-            print(request.POST.get('student_id'))
+            Student.objects.filter(id=request.POST.get('student_id')).delete()
             return redirect('admin_dashboard_student')
-    return render(request, 'admin/student/students.html',context)
+    return render(request, 'admin/student/students.html', context)
+
+
 def admin_add_student(request):
     students = Student.objects.all()
     guardians = Guardian.objects.prefetch_related("student_set").all()
-    enrollments = Enrollment.objects.select_related("student_id","subject_id","group_id").all()
+    enrollments = Enrollment.objects.select_related("student_id", "subject_id", "group_id").all()
     groups = Group.objects.all()
-    student_id = Student.objects.order_by('-id').values_list('id', flat=True).first()+1
+    student_id = Student.objects.order_by('-id').values_list('id', flat=True).first() + 1
     student = Student()
     guardian = Guardian()
     enrollment = Enrollment()
-    
+
     context = {
-        'student_last_id':student_id,
-        'students':students,
-        'guardians':guardians,
-        'enrollments':enrollments,
-        'groups':groups
+        'student_last_id': student_id,
+        'students': students,
+        'guardians': guardians,
+        'enrollments': enrollments,
+        'groups': groups
     }
     if request.method == 'POST':
         try:
@@ -230,12 +236,14 @@ def admin_add_student(request):
             guardian.student_id.add(student.id)
             return redirect('admin_dashboard_student')
         except Exception as e:
-            context['error'] = f"Error adding teacher: {str(e)}"
+            context['error'] = f"Error adding student: {str(e)}"
             print(context['error'])
             return redirect('admin_add_student')
-        
-    return render(request, 'admin/student/add_student.html',context)
 
+    return render(request, 'admin/student/add_student.html', context)
+
+
+# ========================= Admin Reports & Schedules =========================
 def admin_dashboard_report(request):
     groups = Group.objects.all()
     timetable = Timetable.objects.select_related('group_id', 'teacher_id', 'classroom_id').all()
@@ -245,8 +253,8 @@ def admin_dashboard_report(request):
     avg_class_size = total_students / total_groups if total_groups > 0 else 0
     current_date = datetime.date.today()
     exams = Exam.objects.select_related().all()
-    homework = Homework.objects.select_related('group_id','subject_id','teacher_id').all()
-    enrollments = Enrollment.objects.select_related('student_id','group_id').all()
+    homework = Homework.objects.select_related('group_id', 'subject_id', 'teacher_id').all()
+    enrollments = Enrollment.objects.select_related('student_id', 'group_id').all()
 
     context = {
         "groups": groups,
@@ -260,121 +268,12 @@ def admin_dashboard_report(request):
         "homeworks": homework,
         "enrollments": enrollments,
     }
-    return render(request, 'admin/report/reports.html',context)
+    return render(request, 'admin/report/reports.html', context)
+
+
 def admin_dashboard_schedule(request):
-    timetables = Timetable.objects.select_related('group_id', 'teacher_id', 'classroom_id').all()    
+    timetables = Timetable.objects.select_related('group_id', 'teacher_id', 'classroom_id').all()
     context = {
         "timetables": timetables,
     }
-    return render(request, 'admin/schedules/schedules.html',context)
-
-
-# =============================== Teacher ===============================#
-# Teacher Dashboard Views
-def teacher_dashboard(request):
-    return render(request, 'teacher/index.html',{})
-def teacher_dashboard_schedule(request):
-    return render(request, 'teacher/schedule.html',{})
-def teacher_dashboard_attendance(request):
-    return render(request, 'teacher/attendance.html',{})
-def teacher_dashboard_exam(request):
-    return render(request, 'teacher/exam.html',{})
-def teacher_dashboard_report(request):
-    return render(request, 'teacher/report.html',{})
-def teacher_dashboard_inbox(request):
-    return render(request, 'teacher/inbox.html',{})
-# =============================== Student ===============================#
-def student_dashboard(request):
-    context = {
-        "current_date": datetime.date.today(),
-    }
-    return render(request, 'student/index.html',context)
-def student_dashboard_schedule(request):
-    return render(request, 'student/schedule.html',{})
-def student_dashboard_assignment(request):
-    return render(request, 'student/assignment.html',{})
-def student_dashboard_grade(request):
-    return render(request, 'student/grade.html',{})
-def student_dashboard_library(request):
-    return render(request, 'student/library.html',{})
-def student_dashboard_inbox(request):
-    return render(request, 'student/inbox.html',{})
-
-
-# login view
-def login(request):
-    if request.method == "POST":
-        username = request.POST.get("email", "").strip()
-        password = request.POST.get("password", "").strip()
-        
-        # Use environment variables or Django settings for credentials
-        # This is temporary - should use proper authentication
-        ADMIN_EMAIL = "admin@school.edu"
-        ADMIN_PASSWORD = "admin123"
-        TEACHER_EMAIL = "teacher@school.edu"
-        TEACHER_PASSWORD = "teacher123"
-        STUDENT_EMAIL = "student@school.edu"
-        STUDENT_PASSWORD = "student123"
-        
-        if username == ADMIN_EMAIL and password == ADMIN_PASSWORD:
-            return redirect("admin_dashboard")
-        elif username == TEACHER_EMAIL and password == TEACHER_PASSWORD:
-            return redirect("teacher_dashboard")
-        elif username == STUDENT_EMAIL and password == STUDENT_PASSWORD:
-            return redirect("student_dashboard")
-        else:
-            return render(request, "login.html", {"error": "Invalid credentials"})
-    
-    return render(request, "login.html", {})
-
-def logout(request):
-    """Logout user and redirect to login page"""
-    return redirect("login")
-
-# Create your views here.
-
-
-
-
-# Logic for admin_function module
-
-def enrollment_trends():
-    current_date = datetime.date.today()
-    def day_counter(d):
-        return (current_date - d).days if d else None
-
-    top_n = 5
-
-    # Latest enrollments (most recent first)
-    latest_enrollments = (
-        Enrollment.objects
-        .select_related('student_id')
-        .order_by('-enrollment_date')[:top_n]
-    )
-
-    enrollment_items = []
-    for e in latest_enrollments:
-        student = getattr(e, 'student_id', None)
-        if student:
-            enrollment_items.append({
-                'type': 'student',
-                'name': f"{student.first_name} {student.last_name}",
-                'year': e.enrollment_date.year if e.enrollment_date else None,
-                'date': e.enrollment_date,
-                'count': day_counter(student.start_date) if getattr(student, 'start_date', None) else None,
-            })
-
-    # Latest teachers (most recent first)
-    latest_teachers = Teacher.objects.order_by('-hire_date')[:top_n]
-    teacher_items = []
-    for t in latest_teachers:
-        teacher_items.append({
-            'type': 'teacher',
-            'name': f"{t.first_name} {t.last_name}",
-            'year': t.hire_date.year if t.hire_date else None,
-            'date': t.hire_date,
-            'count': day_counter(t.hire_date) if t.hire_date else None,
-        })
-    combined = enrollment_items + teacher_items
-    combined_sorted = sorted([c for c in combined if c.get('count')], key=lambda x: x['count'], reverse=False)
-    return combined_sorted[:top_n]
+    return render(request, 'admin/schedules/schedules.html', context)
