@@ -1,9 +1,13 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 import datetime
 from app.models import *
 from .utils import enrollment_trends
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 
 # ========================= Admin Dashboard =========================
+@login_required(login_url='login')
 def admin_dashboard(request):
     trend_list_enrollment = enrollment_trends()
     student_total = Student.objects.count()
@@ -20,6 +24,7 @@ def admin_dashboard(request):
 
 
 # ========================= Admin Classes =========================
+@login_required(login_url='login')
 def admin_dashboard_class(request):
     groups = Group.objects.all()
     timetable = Timetable.objects.select_related('group_id', 'teacher_id', 'classroom_id').all()
@@ -36,7 +41,6 @@ def admin_dashboard_class(request):
         "avg_class_size": avg_class_size,
     }
     return render(request, 'admin/classes/classes.html', context)
-
 
 def admin_manage_class(request):
     groups = Group.objects.all()
@@ -65,6 +69,7 @@ def admin_manage_class(request):
     return render(request, "admin/classes/manage_class.html", context)
 
 
+@login_required(login_url='login')
 def admin_add_group_schedule(request):
     groups = Group.objects.all()
     rooms = Classroom.objects.all()
@@ -90,6 +95,7 @@ def admin_add_group_schedule(request):
     return render(request, 'admin/classes/add_group_schedule.html', context)
 
 
+@login_required(login_url='login')
 def admin_add_group(request):
     if request.method == "POST":
         group = Group()
@@ -102,6 +108,7 @@ def admin_add_group(request):
     return render(request, 'admin/classes/add_group.html', {})
 
 
+@login_required(login_url='login')
 def admin_add_room(request):
     if request.method == "POST":
         room = Classroom()
@@ -114,6 +121,7 @@ def admin_add_room(request):
 
 
 # ========================= Admin Teachers =========================
+@login_required(login_url='login')
 def admin_add_teacher(request):
     teachers = Teacher.objects.prefetch_related("subject_set").all()
     subjects = Subject.objects.all()
@@ -132,6 +140,12 @@ def admin_add_teacher(request):
             teacher.hire_date = request.POST.get('hire_date')
             teacher.phone_number = request.POST.get('phone_number')
             teacher.email = request.POST.get('email')
+            # Validate email format
+            try:
+                validate_email(teacher.email)
+            except ValidationError:
+                context['error'] = "Invalid email format"
+                return render(request, 'admin/teacher/add_teacher.html', context)
             teacher.address = request.POST.get('address')
             subject_id = request.POST.get('subject')
             teacher.save()
@@ -150,6 +164,7 @@ def admin_add_teacher(request):
     return render(request, 'admin/teacher/add_teacher.html', context)
 
 
+@login_required(login_url='login')
 def admin_dashboard_teacher(request):
     teachers = Teacher.objects.prefetch_related("subject_set").all()
     subjects = Subject.objects.prefetch_related("teacher_set").all()
@@ -167,6 +182,7 @@ def admin_dashboard_teacher(request):
 
 
 # ========================= Admin Students =========================
+@login_required(login_url='login')
 def admin_dashboard_student(request):
     students = Student.objects.prefetch_related('enrollment_set').all()
     context = {
@@ -181,12 +197,15 @@ def admin_dashboard_student(request):
     return render(request, 'admin/student/students.html', context)
 
 
+@login_required(login_url='login')
 def admin_add_student(request):
     students = Student.objects.all()
     guardians = Guardian.objects.prefetch_related("student_set").all()
     enrollments = Enrollment.objects.select_related("student_id", "subject_id", "group_id").all()
     groups = Group.objects.all()
-    student_id = Student.objects.order_by('-id').values_list('id', flat=True).first() + 1
+    # Fix: Handle case when no students exist yet
+    last_id = Student.objects.order_by('-id').values_list('id', flat=True).first()
+    student_id = (last_id + 1) if last_id else 1
     student = Student()
     guardian = Guardian()
     enrollment = Enrollment()
@@ -204,6 +223,12 @@ def admin_add_student(request):
             student.last_name = request.POST.get('last_name')
             student.date_of_birth = request.POST.get('date_of_birth')
             student.email = request.POST.get('email')
+            # Validate email format
+            try:
+                validate_email(student.email)
+            except ValidationError:
+                context['error'] = "Invalid email format"
+                return render(request, 'admin/student/add_student.html', context)
             student.address = request.POST.get('address')
             student.phone_number = request.POST.get('phone_number')
             student.gender = request.POST.get('gender')
@@ -244,6 +269,7 @@ def admin_add_student(request):
 
 
 # ========================= Admin Reports & Schedules =========================
+@login_required(login_url='login')
 def admin_dashboard_report(request):
     groups = Group.objects.all()
     timetable = Timetable.objects.select_related('group_id', 'teacher_id', 'classroom_id').all()
@@ -271,6 +297,7 @@ def admin_dashboard_report(request):
     return render(request, 'admin/report/reports.html', context)
 
 
+@login_required(login_url='login')
 def admin_dashboard_schedule(request):
     timetables = Timetable.objects.select_related('group_id', 'teacher_id', 'classroom_id').all()
     context = {
